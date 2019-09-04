@@ -5,12 +5,15 @@
 //  Created by Brad Greenlee on 10/11/15.
 //  Copyright © 2015 Etsy. All rights reserved.
 //
+//  Updated to Swift 5 compatiblity by Shawn Anderson on 8/18/2019
+//
+//  AppIcon made by Freepik from www.flaticon.com
 
 import Foundation
 
 struct Weather: CustomStringConvertible {
     var city: String
-    var currentTemp: Float
+    var currentTemp: NSNumber
     var conditions: String
     var icon: String
     
@@ -27,13 +30,17 @@ class WeatherAPI {
         let session = URLSession.shared
         // url-escape the query string we're passed
         let escapedQuery = query.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
-        let url = URL(string: "\(BASE_URL)?APPID=\(API_KEY)&units=imperial&q=\(escapedQuery!)")
+        let url = URL(string: "\(BASE_URL)?APPID=\(API_KEY)&units=imperial&zip=\(escapedQuery!),us")
+        
+        //Write out the query string to log for debugging.  Put query string in Postman for debugging.
+        NSLog("Query string is: \(url!)")
+        
         let task = session.dataTask(with: url!) { data, response, err in
             // first check for a hard error
             if let error = err {
                 NSLog("weather api error: \(error)")
             }
-
+            
             // then check the response code
             if let httpResponse = response as? HTTPURLResponse {
                 switch httpResponse.statusCode {
@@ -68,7 +75,7 @@ class WeatherAPI {
         
         let weather = Weather(
             city: json["name"] as! String,
-            currentTemp: mainDict["temp"] as! Float,
+            currentTemp: mainDict["temp"] as! NSNumber,
             conditions: weatherDict["main"] as! String,
             icon: weatherDict["icon"] as! String
         )

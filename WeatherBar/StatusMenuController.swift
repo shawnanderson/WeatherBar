@@ -5,10 +5,12 @@
 //  Created by Brad Greenlee on 10/11/15.
 //  Copyright © 2015 Etsy. All rights reserved.
 //
+//  Updated to Swift 5 compatiblity by Shawn Anderson on 8/18/2019
+//  AppIcon made by Freepik from www.flaticon.com
 
 import Cocoa
 
-let DEFAULT_CITY = "Seattle, WA"
+let DEFAULT_ZIP = "30309" //Use only 5 digit US zip codes
 
 class StatusMenuController: NSObject, PreferencesWindowDelegate {    
     @IBOutlet weak var statusMenu: NSMenu!
@@ -17,7 +19,7 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     var weatherMenuItem: NSMenuItem!
     var preferencesWindow: PreferencesWindow!
 
-    let statusItem = NSStatusBar.system().statusItem(withLength: NSVariableStatusItemLength)
+    let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     let weatherAPI = WeatherAPI()
     
     override func awakeFromNib() {
@@ -31,13 +33,16 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         preferencesWindow = PreferencesWindow()
         preferencesWindow.delegate = self
         
+        //Hardcoded to update every 15 minutes - this should be a preference.  Keep the daily limit of requests you can make in mind. :)
+        Timer.scheduledTimer(timeInterval: 900.0, target: self, selector: #selector(updateWeather), userInfo: nil, repeats: true)
+        
         updateWeather()
     }
     
-    func updateWeather() {
+    @objc func updateWeather() {        
         let defaults = UserDefaults.standard
-        let city = defaults.string(forKey: "city") ?? DEFAULT_CITY
-        weatherAPI.fetchWeather(city) { weather in
+        let zip = defaults.string(forKey: "zip") ?? DEFAULT_ZIP
+        weatherAPI.fetchWeather(zip) { weather in
             self.weatherView.update(weather)
         }
     }
@@ -51,7 +56,7 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     }
     
     @IBAction func quitClicked(_ sender: NSMenuItem) {
-        NSApplication.shared().terminate(self)
+        NSApplication.shared.terminate(self)
     }
     
     func preferencesDidUpdate() {
