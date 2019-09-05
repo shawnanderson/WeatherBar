@@ -11,7 +11,7 @@ The very helpful tutorial is available at http://footle.org/WeatherBar/
 - Menubar refreshes every 15 minutes
 
 ** Instructions **
-- Create an account to get an API key here: [https://home.openweathermap.org/users/sign_up]
+- Create an account to get an API key here: https://home.openweathermap.org/users/sign_up
 - Register your API key within WeatherAPI.swift
 - Update the Default zip within StatusMenuController.swift or in the app preferences
 
