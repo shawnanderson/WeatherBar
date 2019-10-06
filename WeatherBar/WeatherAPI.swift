@@ -13,6 +13,9 @@ import Foundation
 
 struct Weather: CustomStringConvertible {
     var city: String
+    var sunRise: String
+    var sunSet: String
+    var humidity: NSNumber
     var currentTemp: NSNumber
     var conditions: String
     var icon: String
@@ -69,17 +72,29 @@ class WeatherAPI {
             return nil
         }
         
-        var mainDict = json["main"] as! JSONDict
-        var weatherList = json["weather"] as! [JSONDict]
-        var weatherDict = weatherList[0]
+        let mainDict = json["main"] as! JSONDict
+        let weatherList = json["weather"] as! [JSONDict]
+        let sysDict = json["sys"] as! JSONDict
+        let weatherDict = weatherList[0]
         
         let weather = Weather(
             city: json["name"] as! String,
+            sunRise: self.getTimeFromUnixDateTime(sysDict["sunrise"] as! Double),
+            sunSet: self.getTimeFromUnixDateTime(sysDict["sunset"] as! Double),
+            humidity: mainDict["humidity"] as! NSNumber,
             currentTemp: mainDict["temp"] as! NSNumber,
             conditions: weatherDict["main"] as! String,
             icon: weatherDict["icon"] as! String
         )
         
         return weather
+    }
+    
+    func getTimeFromUnixDateTime(_ dateTime: Double) -> String{
+            let date = Date(timeIntervalSince1970: dateTime)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "hh:mm a"
+            
+        return dateFormatter.string(from: date)
     }
 }
