@@ -13,7 +13,7 @@ The very helpful tutorial is available at http://footle.org/WeatherBar/
 - Added sunrise and sunset times
 
 ** Instructions **
-- Create an account to get an API key here: [https://home.openweathermap.org/users/sign_up]
+- Create an account to get an API key here: https://home.openweathermap.org/users/sign_up
 - Register your API key within WeatherAPI.swift
 - Update the Default zip within StatusMenuController.swift or in the app preferences
 
